@@ -7,22 +7,13 @@ from torch.cuda import amp
 from torchvision.models import convnext_tiny
 import os
 import requests
-import gdown
+from huggingface_hub import hf_hub_download
 
 Device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 dtype = torch.bfloat16 if Device.type == "cuda" else torch.float32
 
-CKPT_URL = "https://drive.google.com/uc?export=download&id=1D0IrQWjj_OSADcPFV2UilCmPZZNUKyfs"
-
-def download_model_if_missing(url, dest_path):
-    if os.path.exists(dest_path):
-        return
-
-    os.makedirs(os.path.dirname(dest_path), exist_ok=True)
-    print("Downloading model from Google Drive via gdown...")
-
-    gdown.download(url, dest_path, quiet=False)
-    print("Model download is done")
+HF_REPO_ID = "owenpha7/ConvNext_tiny"
+HF_FILENAME = "ConvNext_Tiny.pt"  
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))  # biasanya /app
 CKPT_PATH = os.path.join(BASE_DIR, "weights", "ConvNext_Tiny.pt")
@@ -71,12 +62,23 @@ def load_trained_model(ckpt_path):
 
     return model
 
-def setup_model(ckpt_url, ckpt_path):
-    download_model_if_missing(ckpt_url, ckpt_path)
-    model = load_trained_model(ckpt_path)
+def setup_model(repo_id, filename, local_path):
+    if local_path is not None:
+        os.makedirs(os.path.dirname(local_path), exist_ok=True)
+        ckpt_path = local_path
+    else:
+        ckpt_path = None
+
+    downloaded_path = hf_hub_download(
+        repo_id=repo_id,
+        filename=filename,
+        local_dir=os.path.dirname(local_path) if local_path is not None else None,
+    )
+
+    model = load_trained_model(downloaded_path)
     return model
 
-model = setup_model(CKPT_URL, CKPT_PATH)
+model = setup_model(HF_REPO_ID, HF_FILENAME, CKPT_PATH)
 
 @torch.no_grad()
 def predict_one(img_pil: Image.Image, model = model):
