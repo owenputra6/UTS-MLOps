@@ -1,0 +1,14 @@
+# Compiled Python files
+__pycache__/
+*.pyc
+
+# Project-specific
+weights/
+preprocessing/
+train/
+test/
+
+# mlflow
+mlruns/
+mlartifacts/
+mlflow.db
