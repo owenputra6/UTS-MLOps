@@ -11,7 +11,7 @@ import requests
 Device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 dtype = torch.bfloat16 if Device.type == "cuda" else torch.float32
 
-CKPT_URL = "https://drive.google.com/file/d/1D0IrQWjj_OSADcPFV2UilCmPZZNUKyfs/view?usp=sharing"
+CKPT_URL = "https://drive.google.com/uc?export=download&id=1D0IrQWjj_OSADcPFV2UilCmPZZNUKyfs"
 
 def download_model_if_missing(url, dest_path):
     if not os.path.exists(dest_path):
