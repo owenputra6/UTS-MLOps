@@ -58,7 +58,7 @@ def build_model():
     return model.to(Device)
 
 def load_trained_model(ckpt_path, num_classes, device="cpu"):
-    model = build_model(num_classes, device)
+    model = build_model()
 
     ckpt = torch.load(ckpt_path, map_location=device)
     model.load_state_dict(ckpt["model_state"])
