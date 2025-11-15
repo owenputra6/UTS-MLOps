@@ -57,21 +57,18 @@ def build_model():
 
     return model.to(Device)
 
-def load_trained_model(ckpt_path, num_classes, device="cpu"):
+def load_trained_model(ckpt_path, num_classes):
     model = build_model()
 
-    ckpt = torch.load(ckpt_path, map_location=device)
+    ckpt = torch.load(ckpt_path, map_location= Device, weights_only=False)
     model.load_state_dict(ckpt["model_state"])
     model.eval()
 
     return model
 
-def setup_model(num_classes, ckpt_url, ckpt_path, device="cpu"):
-    # Step 1: download if missing
+def setup_model(num_classes, ckpt_url, ckpt_path):
     download_model_if_missing(ckpt_url, ckpt_path)
-
-    # Step 2: build + load weights
-    model = load_trained_model(ckpt_path, num_classes, device)
+    model = load_trained_model(ckpt_path, num_classes, Device)
     return model
 
 model = setup_model(num_classes, CKPT_URL, CKPT_PATH, Device)
