@@ -71,7 +71,7 @@ def setup_model(num_classes, ckpt_url, ckpt_path):
     model = load_trained_model(ckpt_path, num_classes, Device)
     return model
 
-model = setup_model(num_classes, CKPT_URL, CKPT_PATH, Device)
+model = setup_model(num_classes, CKPT_URL, CKPT_PATH)
 
 @torch.no_grad()
 def predict_one(img_pil: Image.Image, model = model):
