@@ -7,6 +7,7 @@ from torch.cuda import amp
 from torchvision.models import convnext_tiny
 import os
 import requests
+import gdown
 
 Device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 dtype = torch.bfloat16 if Device.type == "cuda" else torch.float32
@@ -14,18 +15,14 @@ dtype = torch.bfloat16 if Device.type == "cuda" else torch.float32
 CKPT_URL = "https://drive.google.com/uc?export=download&id=1D0IrQWjj_OSADcPFV2UilCmPZZNUKyfs"
 
 def download_model_if_missing(url, dest_path):
-    if not os.path.exists(dest_path):
-        os.makedirs(os.path.dirname(dest_path), exist_ok=True)
-        print("Downloading model from Google Drive...")
+    if os.path.exists(dest_path):
+        return
 
-        with requests.get(url, stream=True) as r:
-            r.raise_for_status()
-            with open(dest_path, "wb") as f:
-                for chunk in r.iter_content(chunk_size=8192):
-                    if chunk:
-                        f.write(chunk)
+    os.makedirs(os.path.dirname(dest_path), exist_ok=True)
+    print("Downloading model from Google Drive via gdown...")
 
-        print("Model download is done")
+    gdown.download(url, dest_path, quiet=False)
+    print("Model download is done")
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))  # biasanya /app
 CKPT_PATH = os.path.join(BASE_DIR, "weights", "ConvNext_Tiny.pt")
