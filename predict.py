@@ -58,7 +58,15 @@ def load_trained_model(ckpt_path):
     model = build_model()
 
     ckpt = torch.load(ckpt_path, map_location= Device, weights_only=False)
-    model.load_state_dict(ckpt["model_state"])
+    if isinstance(ckpt, dict) and "model_state" in ckpt:
+        state_dict = ckpt["model_state"]
+        print("[load_trained_model] Using ckpt['model_state']")
+    else:
+        # Kalau ternyata langsung state_dict
+        state_dict = ckpt
+        print("[load_trained_model] Using checkpoint as raw state_dict")
+
+    model.load_state_dict(state_dict)
     model.eval()
 
     return model
