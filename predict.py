@@ -57,7 +57,7 @@ def build_model():
 
     return model.to(Device)
 
-def load_trained_model(ckpt_path, num_classes):
+def load_trained_model(ckpt_path):
     model = build_model()
 
     ckpt = torch.load(ckpt_path, map_location= Device, weights_only=False)
@@ -66,12 +66,12 @@ def load_trained_model(ckpt_path, num_classes):
 
     return model
 
-def setup_model(num_classes, ckpt_url, ckpt_path):
+def setup_model(ckpt_url, ckpt_path):
     download_model_if_missing(ckpt_url, ckpt_path)
-    model = load_trained_model(ckpt_path, num_classes, Device)
+    model = load_trained_model(ckpt_path)
     return model
 
-model = setup_model(num_classes, CKPT_URL, CKPT_PATH)
+model = setup_model(CKPT_URL, CKPT_PATH)
 
 @torch.no_grad()
 def predict_one(img_pil: Image.Image, model = model):
